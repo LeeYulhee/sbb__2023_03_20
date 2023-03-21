@@ -5,6 +5,7 @@ import com.mysite.sbb.answer.AnswerRepository;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.question.QuestionRepository;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,8 +25,14 @@ class SbbApplicationTests {
 	@Autowired
 	private AnswerRepository answerRepository;
 
-	@Test
-	void testJpa() {
+	@BeforeEach // 아래 메서드는 각 테스트케이스가 실행되기 전에 실행된다.
+	void beforeEach() {
+		questionRepository.deleteAll();
+		// 모든 데이터 삭제
+
+		questionRepository.clearAutoIncrement();
+		// 흔적삭제(다음번 INSERT 때 id가 1번으로 설정되도록)
+
 		Question q1 = new Question();
 		q1.setSubject("sbb가 무엇인가요?");
 		q1.setContent("sbb에 대해서 알고 싶습니다.");
@@ -37,6 +44,17 @@ class SbbApplicationTests {
 		q2.setContent("id는 자동으로 생성되나요?");
 		q2.setCreateDate(LocalDateTime.now());
 		this.questionRepository.save(q2);
+	}
+
+	@Test
+	void testJpa() {
+		Question q = new Question();
+		q.setSubject("세계에서 가장 부유한 국가가 어디인가요?");
+		q.setContent("알고 싶습니다.");
+		q.setCreateDate(LocalDateTime.now());
+		this.questionRepository.save(q);
+
+		assertEquals("세계에서 가장 부유한 국가가 어디인가요?", questionRepository.findById(3).get().getSubject());
 	}
 
 	@Test
