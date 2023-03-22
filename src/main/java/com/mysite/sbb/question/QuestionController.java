@@ -45,6 +45,6 @@ public class QuestionController {
             return "question_form";
         }
         this.questionService.create(questionForm.getSubject(), questionForm.getContent());
-        return "redirect:/question.list"; // 질문 저장 후 질문 목록으로 이동
+        return "redirect:/question/list"; // 질문 저장 후 질문 목록으로 이동
     }
 }
